@@ -1,0 +1,121 @@
+{
+  "project_name": "Premium AI-powered Typing Platform",
+  "theme": "dark",
+  "archetype": "Archetype 4 (Swiss & High-Contrast) mixed with Technical/Terminal Luxury",
+  "design_philosophy": {
+    "core_principles": [
+      "Typing as Flow State: The arena must be utterly devoid of distractions. Maximum focus on the center.",
+      "Terminal Luxury: Deepest black backgrounds (LCH-inspired) with high-contrast text and subtle glassmorphic elements. No pure black #000000, use #09090B.",
+      "Data as Art: Post-session analytics must look like high-end fintech dashboards, prioritizing density and clarity."
+    ],
+    "vibe": "Monkeytype focus meets Linear's elevated dark mode and Raycast's snappy utility."
+  },
+  "colors": {
+    "background": {
+      "base": "#09090B",
+      "surface": "#18181B",
+      "surface_elevated": "#27272A",
+      "glass": "rgba(24, 24, 27, 0.6)"
+    },
+    "text": {
+      "primary": "#FAFAFA",
+      "secondary": "#A1A1AA",
+      "muted": "#52525B",
+      "typing_untyped": "#71717A",
+      "typing_typed": "#FAFAFA",
+      "typing_error": "#F43F5E"
+    },
+    "border": {
+      "subtle": "rgba(255, 255, 255, 0.05)",
+      "active": "rgba(59, 130, 246, 0.3)"
+    },
+    "accent": {
+      "primary": "#3B82F6",
+      "primary_hover": "#2563EB",
+      "primary_glow": "rgba(59, 130, 246, 0.15)",
+      "success": "#10B981",
+      "error": "#F43F5E"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "heading": "'IBM Plex Mono', monospace",
+      "body": "'Inter', sans-serif",
+      "typing_arena": "'IBM Plex Mono', monospace"
+    },
+    "scales": {
+      "h1": "text-4xl sm:text-5xl font-mono tracking-tighter text-white",
+      "h2": "text-2xl sm:text-3xl font-mono tracking-tight text-white",
+      "h3": "text-xl sm:text-2xl font-mono text-zinc-200",
+      "typing_text": "text-2xl sm:text-3xl lg:text-4xl leading-relaxed tracking-normal font-mono",
+      "body": "text-base font-sans text-zinc-400",
+      "label": "text-xs font-sans uppercase tracking-[0.2em] text-zinc-500"
+    }
+  },
+  "layout": {
+    "container": "max-w-6xl mx-auto px-6",
+    "typing_container": "max-w-4xl mx-auto px-4 w-full h-full flex flex-col justify-center",
+    "spacing_scale": {
+      "section": "py-24 md:py-32",
+      "bento_gap": "gap-6",
+      "card_padding": "p-8"
+    },
+    "dashboard_grid": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6",
+    "corners": "rounded-xl"
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-blue-600 hover:bg-blue-500 text-white font-sans font-medium px-6 py-3 rounded-lg transition-colors border border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.1)]",
+      "secondary": "bg-zinc-900 hover:bg-zinc-800 text-white font-sans px-6 py-3 rounded-lg border border-white/10 transition-colors",
+      "ghost": "hover:bg-zinc-800/50 text-zinc-400 hover:text-white transition-colors rounded-lg px-4 py-2"
+    },
+    "cards": {
+      "bento_base": "bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-xl p-6 transition-all hover:border-white/10",
+      "stat_card": "flex flex-col gap-2 bg-zinc-900/30 border border-white/5 p-6 rounded-xl"
+    },
+    "inputs": {
+      "base": "bg-zinc-900/50 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-sans"
+    },
+    "typing_arena": {
+      "caret": "w-0.5 h-8 bg-blue-500 animate-pulse absolute transition-all duration-75",
+      "word_wrapper": "relative inline-block mr-3 mb-2",
+      "letter_correct": "text-white",
+      "letter_incorrect": "text-rose-500 bg-rose-500/20 rounded-sm",
+      "letter_untyped": "text-zinc-600"
+    }
+  },
+  "motion": {
+    "caret_animation": "Use Framer Motion to smoothly translate the caret x/y position behind/under the current letter.",
+    "page_transitions": "Framer motion initial={opacity: 0, y: 10} animate={opacity: 1, y: 0} transition={duration: 0.3}",
+    "stagger_children": "For dashboard cards and stats grid."
+  },
+  "media": {
+    "images": [
+      {
+        "category": "hero_background",
+        "url": "https://images.pexels.com/photos/12707786/pexels-photo-12707786.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Dark abstract dynamic tunnel effect in blue tones, conveying motion and depth. Use with a heavy opacity overlay (bg-zinc-950/80)."
+      },
+      {
+        "category": "abstract_tech",
+        "url": "https://images.unsplash.com/photo-1762279389042-9439bfb6c155?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMGRhcmslMjB0ZWNobm9sb2d5JTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzczNTc4Nzl8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract neon lines forming a digital landscape. Use for authentication page backgrounds."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Install and use 'IBM Plex Mono' (or similar mono font) for the typing arena text and main headings. Use 'Inter' for UI text.",
+    "Do NOT use pure #000000. Use Tailwind zinc-950 (#09090B) for the root background.",
+    "The Typing Arena should dominate the screen. Remove all sidebars and distractions during an active test (Monkeytype style).",
+    "Use framer-motion for the typing caret to ensure it glides character-by-character smoothly.",
+    "For the post-session stats, implement recharts with dark mode styling (no grid lines, subtle stroke colors).",
+    "All interactive elements MUST have `data-testid` attributes.",
+    "Use Lucide React for minimal, monoline icons.",
+    "The AI Mistake Analysis should look like a code-review diff or a technical terminal output.",
+    "Forms (login/signup) must use custom styled Shadcn components, stripped of light mode defaults."
+  ],
+  "accessibility": {
+    "contrast": "Ensure untyped text (zinc-600) meets contrast against zinc-950 background (aprox 4.5:1). Active text is white.",
+    "focus": "focus:ring-2 focus:ring-blue-500/50 on all focusable inputs and buttons."
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "summary": "Tested 3 P1 features (auto-adapt recommendation, streak/daily-goal, per-keystroke trace). Backend pytest expanded from 22 -> 32 tests (added 10 new tests across streak, recommendation, keystrokes), 32/32 passing. Caught and fixed a real REGRESSION introduced by keystrokes feature: GET /api/sessions returned 500 because list endpoint projected out keystrokes then passed None to SessionOut whose field expects a List. Frontend e2e via Playwright confirmed: dashboard renders streak-card / daily-goal-card / recommendation-card with correct empty-state values, apply-recommendation-btn fires 'auto-adapt applied.' toast and updates difficulty/length pills, full Practice -> Results flow runs end-to-end and Results renders typing-trace chart driven by real per-keystroke data.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/sessions (GET list)", "issue": "FIXED IN THIS ITERATION. Was returning 500 - root cause: projection {_id:0, keystrokes:0} drops keystrokes field, then `SessionOut(**{k: it.get(k) ...})` passed keystrokes=None which violates Pydantic field type List[Dict]. Patched in /app/backend/sessions_router.py to filter out None kwargs so default_factory takes effect."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Recharts (Results page typing-trace + history charts)", "issue": "Carryover from iter 1 - ResponsiveContainer warns 'width(-1) and height(-1) of chart should be greater than 0' on first paint. Chart still renders correctly after layout settles. Suggest fixed minHeight or aspect ratio on the wrapper.", "selector": "ResponsiveContainer on /results/:id", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_streak_recommendation_keystrokes.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional) Validate the list_sessions fix in /app/backend/sessions_router.py - kwargs are now filtered to drop None so SessionOut default_factory keystrokes=[] applies. Regression test now covers it (TestSessions::test_list_sessions + TestKeystrokes::test_list_endpoint_excludes_keystrokes).",
+    "(Carryover from iter 1) Recharts ResponsiveContainer width=-1/height=-1 warnings on Results page - give chart wrapper an explicit height (h-64) or aspect ratio.",
+    "(Carryover from iter 1) TypingArena 'Maximum update depth exceeded' warning from onLiveStats effect - wrap onLiveStats in useCallback in Practice.jsx."
+  ],
+  "critical_code_review_comments": [
+    "REGRESSION found: list_sessions used a destructive projection (keystrokes:0) but SessionOut Pydantic model declares keystrokes as List[Dict] - passing None caused 500. Fix applied. Same risk pattern exists for any future field added to SessionOut that gets projected away; consider switching to model construction via model_validate(it) with extra='ignore' to be more robust.",
+    "_compute_streak: uses datetime.fromisoformat(i['created_at']).date() which only counts UTC day boundaries - users in non-UTC timezones may see streak/today drift up to ~12h. Acceptable for v1, document or use user-locale eventually.",
+    "_compute_recommendation: only bumps from Beginner->Intermediate->Advanced; once at Advanced it stays. Correct given DIFFICULTY_ORDER bounds. The reason strings are good UX.",
+    "Keystrokes payload capped at 2000 per session client-side (TypingArena slice) - prevents bloat. Backend has no explicit cap; consider validating len(keystrokes) <= e.g. 5000 server-side to harden.",
+    "stats/overview correctly excludes keystrokes from the projection for performance - good. Stats already fetches up to 2000 sessions; without that exclusion this would be a memory/perf risk.",
+    "Frontend Dashboard: apply-recommendation-btn correctly mutates local difficulty + length state and shows toast; scroll-to-begin uses querySelector inside an arrow callback - works but consider useRef for resilience."
+  ],
+  "updated_files": [
+    "/app/backend/sessions_router.py",
+    "/app/backend/tests/test_streak_recommendation_keystrokes.py"
+  ],
+  "success_rate": {"backend": "100% (32/32 pytest)", "frontend": "100% on covered flows"},
+  "test_credentials": "Admin: admin@typeforge.app / Admin@123. Tests dynamically register TEST_p1_<uuid>@typeforge.app users.",
+  "seed_data_creation": "Each new test class registers a fresh TEST_p1_ user; UI test registered TEST_ui_<uuid>@typeforge.app and produced 1 real session with keystrokes.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "P1 backend tests in /app/backend/tests/test_streak_recommendation_keystrokes.py cover (a) empty user defaults (streak=0, rec=Beginner/short), (b) today-count + current-streak after first session, (c) goal_met after 3 daily sessions, (d) bump to Advanced when avg acc>=95 & wpm>=50, (e) drop to Beginner when avg acc<85, (f) stay-in-lane medium length when 88<=acc<95, (g) keystrokes round-trip on GET /sessions/{id}, (h) keystrokes EXCLUDED from GET /sessions list, (i) backwards-compat for sessions without keystrokes. The list_sessions 500 regression was fixed in sessions_router.py - if main agent reverts to a destructive projection pattern in future, prefer letting Pydantic default_factory fill missing fields by filtering None kwargs (or use model_validate with extra='ignore').",
+  "rca of the issue": "GET /api/sessions 500: sessions_router.list_sessions did `db.sessions.find(query, {'_id':0, 'keystrokes':0})` to keep list payloads small, then constructed `SessionOut(**{k: it.get(k) for k in SessionOut.model_fields.keys()})`. Because keystrokes were projected out, it.get('keystrokes') returned None, but SessionOut.keystrokes is typed `List[Dict[str, Any]]` (default_factory=list) and Pydantic v2 rejects None for non-Optional list -> ValidationError -> FastAPI 500. Mitigation: build kwargs with `{k: v for k,v in (...) if v is not None}` so default_factory applies. Verified by re-running pytest and adding a regression test (test_list_endpoint_excludes_keystrokes) that confirms list responds 200 and keystrokes default to []."
+}

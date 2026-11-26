@@ -1,0 +1,29 @@
+/* Page-level layout helpers used across TypeForge */
+.tf-shell {
+    min-height: 100vh;
+    width: 100%;
+    background: radial-gradient(
+            1200px 600px at 50% -20%,
+            rgba(59, 130, 246, 0.08),
+            transparent 60%
+        ),
+        #09090b;
+}
+
+.tf-card {
+    background: rgba(24, 24, 27, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(14px);
+    border-radius: 14px;
+}
+
+.tf-divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.08),
+        transparent
+    );
+}
